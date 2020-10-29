@@ -18,7 +18,7 @@
   Vi ska skrapa ner recept.
 ## Schema
   Vi har valt att träffas via Google meet/Zoom 2ggr i veckan,
-  *trosdagar på eftermiddag* och *fredagar på förmiddag*.
+  *torsdagar på eftermiddag* och *fredagar på förmiddag*.
 ## Tills nästa möte
   Vi ska komma med förslag tills nästa möte på vilka hemsidor vi
   skulle kunna skrapa.
