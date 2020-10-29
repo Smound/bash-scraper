@@ -8,6 +8,7 @@
     - [Schema](#schema)
     - [Tills nästa möte](#tills-nästa-möte)
     - [Hur ska vi gå tillväga?](#hur-ska-vi-gå-tillväga)
+    - [Länkar](#länkar)
 
 <!-- markdown-toc end -->
 
