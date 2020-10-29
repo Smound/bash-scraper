@@ -32,3 +32,12 @@
   Målet är att börja enkelt och bygga på i mån av tid, så att hela
   tiden ha en fungerande scraper.
 
+## Länkar
+  Ecce nämnde [denna artikel](https://medium.com/@LiliSousa/web-scraping-with-bash-690e4ee7f98d) som visar lite hur man kan börja
+  bygga en scraper med bash.
+
+  Vi testade lite att undersöka [recept.se](https://recept.se/) som möjligt
+  scrape-target, och hur man "tänker" när man ska skrapa info (ex. få
+  en lista av kategorier, för varje kategori få en lista av länkar
+  till recept, igenom alla sidor. För varje recept, få ner namnet,
+  ingredienslista och instuktioner).
