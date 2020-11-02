@@ -14,7 +14,7 @@ do
 		echo "Kategori $k sida $i" >> $rf
 		printf "*****************************\n\n" >> $rf
 		echo "curl ${k}?page=${i}"
-		curl -s "${k}?page=${i}" | grep -E '^:title|:key=' >> $rf
+		curl -s "${k}?page=${i}" | grep -E '^:title|:slug' | sed s/'&quot;'//g | sed s/'\\u00e5'/"å"/g | sed s/'\\u00f6'/"ö"/g | sed s/'\\u00e4'/"ä"/g | sed s/'\u00e9'/"é"/g >> $rf
 		let i=$(( $i + 1 ))
 	done
 done
