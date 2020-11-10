@@ -1,0 +1,1 @@
+curl -s https://recept.se/recept/trillingnot-med-mandelmassa-och-nutella | grep ',"recipeIngredient":\[' | sed  -r 's/.*,"recipeIngredient":\[([^]]*)\].*/\1/' | awk  'BEGIN{ FS = "\",\"" } { for (i=1;i<=NF;i++) { print $i }}' | sed 's/"//'
