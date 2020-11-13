@@ -20,6 +20,8 @@ if [ $menu == Recept ]; then
   echo "Skriv in ett recept!"
   read varstarters
   echo "Söker efter $varstarters"
+  find  -iname "$varstarters*"
+
 else
   echo "Skriv in en Ingrediens!"
   read varstarters
