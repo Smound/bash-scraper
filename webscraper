@@ -6,7 +6,7 @@ echo "Result: " > $rf
 kat=$(curl -s https://recept.se/kategorier | grep 'https://recept.se/recept' | awk '{for (i = 1;i<NF;i++) { print $i } }'|grep 'href="https://recept.se/kategori'| sed 's%^href="\(https://recept.se/kategori/.*\)"%\1%')
 for k in $kat 
 do 
-	let numkatpg=$(curl -s $k | grep '<ul class="c-pagination' | awk '{for (i=1;i<NF;i++) {print $i} }' | grep 'max=' | sed -r 's/max=([0-9]+)/\1/')
+	numkatpg=$(curl -s $k | grep '<ul class="c-pagination' | awk '{for (i=1;i<NF;i++) {print $i} }' | grep 'max=' | sed -r 's/max=([0-9]+)/\1/')
 	let i=1;
 	while [[ $i -le $numkatpg ]]
 	do
