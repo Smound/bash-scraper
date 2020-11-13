@@ -1,3 +1,4 @@
 *.tmp
 result.txt
-
+recept/
+*.log
