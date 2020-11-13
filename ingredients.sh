@@ -21,15 +21,12 @@ do
 	curl -s "https://recept.se/recept/$slug" | grep ',"recipeIngredient":\[' | sed  -r 's/.*,"recipeIngredient":\[([^]]*)\].*/\1/' | awk  'BEGIN{ FS = "\",\"" } { for (i=1;i<=NF;i++) { print $i }}' | sed 's/"//' >> "${FILENAME}"
 	echo -e "\nINSTRUCTIONS\n" >> "${FILENAME}"
 	INSTRUCTIONS_JSON=$(curl "https://recept.se/recept/$slug" 2> /dev/null | grep -o "^.*instructions=.*$" | sed s/':instructions='// | sed s/'&quot;'/'"'/g | sed s/'^"'/""/ | sed s/'"$'/""/ )
-  	# echo "$INSTRUCTIONS_JSON" | jq .[0]
-	STEPS_NR=$(echo "$INSTRUCTIONS_JSON" | jq .[0] | grep -o "instruction" | wc -l)
-	# echo "Found ${STEPS_NR}"
-	let "STEPS_NR -= 1"
-	for STEP in $(seq 0 $STEPS_NR)
+	echo "$INSTRUCTIONS_JSON" | jq .[].instructions | jq .[].instruction > tmp.tmp
+	while read line
 	do
-		echo "$INSTRUCTIONS_JSON" | jq .[0].instructions[$STEP] >> "${FILENAME}"
-	done
+	    echo -e "$line\n\n" | sed s/'^"'// | sed s/'"$'// >> "${FILENAME}"
+	done < tmp.tmp
 done
 
-rm slugs.tmp titles.tmp
+rm slugs.tmp titles.tmp tmp.tmp
 
