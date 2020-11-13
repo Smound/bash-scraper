@@ -24,7 +24,7 @@ if [ $menu == Recept ]; then
   for FILE in $(ls recept)
   do
       echo "$FILE":"$(head -1 recept/$FILE)"
-  done | grep $varstarters > search.tmp
+  done | grep -iE "$varstarters" > search.tmp
 
   IFS="
 "
@@ -46,6 +46,19 @@ else
   read varstarters
   
   echo "Söker efter $varstarters"
+  for FILE in $(ls recept)
+  do
+      LINES_NR=$(wc -l "recept/$FILE")
+      INSTRUCTION_LINE=$(grep -nE "^INSTRUCTIONS" "recept/$FILE" | cut -d ":" -f 1)
+      let "INSTRUCTION_LINE -= 1"
+      cat recept/"$FILE" | head -n ${INSTRUCTION_LINE} | grep -iE "$varstarters" 2>&1 > /dev/null
+      if [ $? -eq 0 ]
+      then
+	  echo -n "$FILE:" >> search.tmp
+	  echo "$(head -1 recept/$FILE)" >> search.tmp
+      fi
+  done
+  
   IFS="
 "
   PS3="Vilken recept vill du se? "
