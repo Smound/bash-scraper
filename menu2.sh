@@ -20,7 +20,11 @@ if [ $menu == Recept ]; then
   echo "Skriv in ett recept!"
   read varstarters
   echo "Söker efter $varstarters"
-  find  -iname "$varstarters*"
+  # find  -iname "$varstarters*"
+  for FILE in $(ls recept)
+  do
+      echo "$FILE":"$(head -1 recept/$FILE)"
+  done | grep $varstarters
 
 else
   echo "Skriv in en Ingrediens!"
