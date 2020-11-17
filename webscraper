@@ -15,15 +15,23 @@ echo "Result: " > $rf
 kat=$(curl -s https://recept.se/kategorier | grep 'https://recept.se/recept' | awk '{for (i = 1;i<NF;i++) { print $i } }'|grep 'href="https://recept.se/kategori'| sed 's%^href="\(https://recept.se/kategori/.*\)"%\1%')
 for k in $kat 
 do 
-	numkatpg=$(curl -s $k | grep '<ul class="c-pagination' | awk '{for (i=1;i<NF;i++) {print $i} }' | grep 'max=' | sed -r 's/max=([0-9]+)/\1/')
-	let i=1;
-	while [[ $i -le $numkatpg ]]
-	do
-		printf "\n\n*****************************\n" >> $rf
-		echo "Kategori $k sida $i" >> $rf
-		printf "*****************************\n\n" >> $rf
-		echo "curl ${k}?page=${i}"
-		curl -s "${k}?page=${i}" | grep -E '^:title|:slug' | sed s/'&quot;'//g | sed s/'\\u00e5'/"å"/g | sed s/'\\u00f6'/"ö"/g | sed s/'\\u00e4'/"ä"/g | sed s/'\u00e9'/"é"/g >> $rf
-		let i=$(( $i + 1 ))
-	done
+        numkatpg=$(curl -s $k | grep '<ul class="c-pagination' | awk '{for (i=1;i<NF;i++) {print $i} }' | grep 'max=' | sed -r 's/max=([0-9]+)/\1/')
+        let i=1;
+        while [[ $i -le $numkatpg ]]
+        do
+                # Prints some info in the result.txt file: category and page number. Useful for
+                # debugging, but ignored by webscraper_stage_2.sh
+                printf "\n\n*****************************\n" >> $rf
+                echo "Kategori $k sida $i" >> $rf
+                printf "*****************************\n\n" >> $rf
+                echo "curl ${k}?page=${i}"
+
+                # This gets titles and slugs (URLsafe titles) saved into a file called
+                # `result.txt'. Notice: this saves titles and slugs in order (the slug for the title
+                # on line N is always on line N+1 of result.txt. This is necessary for
+                # webscraper_stage_2.sh to function correctly.
+                curl -s "${k}?page=${i}" | grep -E '^:title|:slug' | sed s/'&quot;'//g | sed s/'\\u00e5'/"å"/g | sed s/'\\u00f6'/"ö"/g | sed s/'\\u00e4'/"ä"/g |
+                    sed s/'\u00e9'/"é"/g >> $rf
+                let i=$(( $i + 1 ))
+        done
 done
