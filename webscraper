@@ -1,4 +1,13 @@
 #!/bin/bash
+#
+# A web scraper written in bash.
+#
+# This is stage 1, it will iterate through all categories in recept.se
+# and collect all names and slugs (URLs) for each recipe in each
+# category's page.
+#
+# Results are saved to a file called result.txt
+#
 
 rf=result.txt
 echo "Result: " > $rf 

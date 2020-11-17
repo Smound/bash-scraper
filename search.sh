@@ -1,4 +1,22 @@
 #!/bin/bash
+#
+# A web scraper written in bash.
+#
+# This is a utility script to easily search through the scraped
+# recipes.
+#
+# It allows 2 different "modes" of searching: Recept and Ingrediens.
+#
+# RECEPT MODE: will search only in recipes' titles.
+#
+# INGREDIENS MODE: will search among all the recipe's text, including
+#                  ingredients' list and instructions. Useful for
+#                  getting a broader result list (test searching in
+#                  this mode for "ägg", "mjölk", "socker" or any other
+#                  very common ingredient).
+#
+# This script accepts regexps as query strings.
+#
 
 PS3="Välj vad du vill söka efter:"
 options=(Recept Ingrediens)
