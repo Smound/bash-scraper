@@ -36,30 +36,32 @@ for line in $(seq 1 ${TOTAL_RECIPES})
 do
 
 	# Sets the slug of the recipe as filename
-	FILENAME=./recept/$(sed "${line}q;d" slugs.tmp | sed s/"'"//g | sed s/'"'//g | sed s/":slug="//g)
-	TITLE=$(sed "${line}q;d" titles.tmp)
-	touch "${FILENAME}"
-	# Write the title to $FILENAME, and a separator for the ingredients' list
-	echo -e "${TITLE}" | sed s/':title="'// | sed s/'"$'// > "${FILENAME}"
-	echo -e "===INGREDIENTS===\n" >> "${FILENAME}"
-	# Remove quotation marks (both " and ') from our slug, as well as the prefix ':slug='
-	slug=$(sed "${line}q;d" slugs.tmp | sed s/"'"//g | sed s/'"'//g | sed s/":slug="//g )
-	# Printing the slug we're processing for debugging
-	echo $slug
+        FILENAME=./recept/$(sed "${line}q;d" slugs.tmp | sed s/"'"//g | sed s/'"'//g | sed s/":slug="//g)
+	# We do get repeated entries from stage 1, so scrape only if $FILENAME does not exist.
+	if ! [ -e $FILENAME ]; then
+	    TITLE=$(sed "${line}q;d" titles.tmp)
+	    touch "${FILENAME}"
+	    # Write the title to $FILENAME, and a separator for the ingredients' list
+	    echo -e "${TITLE}" | sed s/':title="'// | sed s/'"$'// > "${FILENAME}"
+	    echo -e "===INGREDIENTS===\n" >> "${FILENAME}"
+	    # Remove quotation marks (both " and ') from our slug, as well as the prefix ':slug='
+	    slug=$(sed "${line}q;d" slugs.tmp | sed s/"'"//g | sed s/'"'//g | sed s/":slug="//g )
+	    # Printing the slug we're processing for debugging
+	    echo $slug
 
-	# Curls microdata in Json from the $slug, and greps it to remove unneeded tags
-	jsonData=$(curl -s "https://recept.se/recept/$slug" | grep -o '<script type="application/ld+json">.*</script>' | grep -o '\{.*\}')
-	# Changing IFS to easily parse by line instead of by word
-	IFS="
+	    # Curls microdata in Json from the $slug, and greps it to remove unneeded tags
+	    jsonData=$(curl -s "https://recept.se/recept/$slug" | grep -o '<script type="application/ld+json">.*</script>' | grep -o '\{.*\}')
+	    # Changing IFS to easily parse by line instead of by word
+	    IFS="
 "
-	# For each line it fetches the ingredients data ,formats it with the help of `jq` and write it to $FILENAME
-	for LINE in $(echo "$jsonData" | jq .recipeIngredient | jq .[]); do echo $LINE | sed s/'"'//g >> "${FILENAME}"; done
-	
-	echo -e "\n===INSTRUCTIONS===\n" >> "${FILENAME}"
-	
-	# For each line it fetches the instructions data ,formats it with the help of `jq` and write it to $FILENAME
-	for LINE in $(echo "$jsonData" | jq .recipeInstructions.itemListElement | jq .[]); do echo $LINE | sed s/'"'//g >> "${FILENAME}"; done
-
+	    # For each line it fetches the ingredients data ,formats it with the help of `jq` and write it to $FILENAME
+	    for LINE in $(echo "$jsonData" | jq .recipeIngredient | jq .[]); do echo $LINE | sed s/'"'//g >> "${FILENAME}"; done
+	    
+	    echo -e "\n===INSTRUCTIONS===\n" >> "${FILENAME}"
+	    
+	    # For each line it fetches the instructions data ,formats it with the help of `jq` and write it to $FILENAME
+	    for LINE in $(echo "$jsonData" | jq .recipeInstructions.itemListElement | jq .[]); do echo $LINE | sed s/'"'//g >> "${FILENAME}"; done
+	fi
 done
 
 # Cleanup temporary files
