@@ -1,7 +1,7 @@
 #!/bin/bash
 
-grep "^:slug" result.txt > slugs.tmp
-grep "^:title" result.txt > titles.tmp
+grep "^:slug" result.txt | sort | uniq  > slugs.tmp
+grep "^:title" result.txt | sort | uniq > titles.tmp
 
 #Creates a folder "recept"
 mkdir recept
