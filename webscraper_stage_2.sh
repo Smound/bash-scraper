@@ -1,4 +1,13 @@
 #!/bin/bash
+#
+# A web scraper written in bash.
+#
+# This is stage 2, it will read names and URLs from the file
+# result.txt (from stage 1), and actually scrape down the ingredients
+# list and instructions for the recipe.
+#
+# Recipes will end up in textfiles under the directory ./recept/
+#
 
 grep "^:slug" result.txt | sort | uniq  > slugs.tmp
 grep "^:title" result.txt | sort | uniq > titles.tmp
@@ -43,5 +52,5 @@ do
 	
 done
 
-rm slugs.tmp titles.tmp tmp.tmp
+rm slugs.tmp titles.tmp
 
