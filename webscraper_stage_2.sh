@@ -14,12 +14,17 @@ do
 	FILENAME=./recept/$(sed "${line}q;d" slugs.tmp | sed s/"'"//g | sed s/'"'//g | sed s/":slug="//g)
 	TITLE=$(sed "${line}q;d" titles.tmp)
 	touch "${FILENAME}"
-	echo -e "${TITLE}\n\n" | sed s/':title="'// | sed s/'"$'// > "${FILENAME}"
+	echo -e "${TITLE}" | sed s/':title="'// | sed s/'"$'// > "${FILENAME}"
+	echo -e "===INGREDIENTS===\n" >> "${FILENAME}"
 
 	slug=$(sed "${line}q;d" slugs.tmp | sed s/"'"//g | sed s/'"'//g | sed s/":slug="//g )
 	echo $slug
 	jsonData=$(curl -s "https://recept.se/recept/$slug" | grep -o '<script type="application/ld+json">.*</script>' | grep -o '\{.*\}')
-	echo "$jsonData" | jq
+	IFS="
+"
+	for LINE in $(echo "$jsonData" | jq .recipeIngredient | jq .[]); do echo $LINE | sed s/'"'//g >> "${FILENAME}"; done
+	echo -e "\n===INSTRUCTIONS===\n" >> "${FILENAME}"
+	for LINE in $(echo "$jsonData" | jq .recipeInstructions.itemListElement | jq .[]); do echo $LINE | sed s/'"'//g >> "${FILENAME}"; done
 
 	# TODO: format ingredients and instructions, and write to $FILENAME
 done
