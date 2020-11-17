@@ -3,14 +3,22 @@
 grep "^:slug" result.txt > slugs.tmp
 grep "^:title" result.txt > titles.tmp
 
+#Creates a folder "recept"
 mkdir recept
 
+#:slug example: surdegsbrod-med-dinkel
 echo "Grep found $(wc -l slugs.tmp) slugs"
 
+#Prints out number of total recipes
 TOTAL_RECIPES=$(wc -l slugs.tmp | cut -d" " -f 1)
+
+
+#Loops through each recipe from $slugs.tmp
 
 for line in $(seq 1 ${TOTAL_RECIPES})
 do
+
+	#Sets the title of the recipe as filename
 	FILENAME=./recept/$(sed "${line}q;d" slugs.tmp | sed s/"'"//g | sed s/'"'//g | sed s/":slug="//g)
 	TITLE=$(sed "${line}q;d" titles.tmp)
 	touch "${FILENAME}"
@@ -19,14 +27,20 @@ do
 
 	slug=$(sed "${line}q;d" slugs.tmp | sed s/"'"//g | sed s/'"'//g | sed s/":slug="//g )
 	echo $slug
+
+	#Curls and greps microdata in Json from the $slug
 	jsonData=$(curl -s "https://recept.se/recept/$slug" | grep -o '<script type="application/ld+json">.*</script>' | grep -o '\{.*\}')
 	IFS="
 "
+	#For each line it fetches the ingredients data ,formats it and write it to the file
 	for LINE in $(echo "$jsonData" | jq .recipeIngredient | jq .[]); do echo $LINE | sed s/'"'//g >> "${FILENAME}"; done
+	
 	echo -e "\n===INSTRUCTIONS===\n" >> "${FILENAME}"
+	
+	#For each line it fetches the instructions data ,formats it and write it to the file
 	for LINE in $(echo "$jsonData" | jq .recipeInstructions.itemListElement | jq .[]); do echo $LINE | sed s/'"'//g >> "${FILENAME}"; done
 
-	# TODO: format ingredients and instructions, and write to $FILENAME
+	
 done
 
 rm slugs.tmp titles.tmp tmp.tmp
