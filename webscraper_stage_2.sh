@@ -9,8 +9,8 @@
 # Recipes will end up in textfiles under the directory ./recept/
 #
 
-grep "^:slug" result.txt > slugs.tmp # Isolate all slugs to a separate file
-grep "^:title" result.txt > titles.tmp # Isolate all titles to a separate file
+grep "^:slug" result.txt | sort | uniq  > slugs.tmp # Isolate all slugs to a separate file
+grep "^:title" result.txt | sort | uniq > titles.tmp # Isolate all titles to a separate file
 
 # recept will contain all the recipes, each in a textfile
 mkdir recept
